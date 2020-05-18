@@ -1,3 +1,7 @@
+# credits for replace_string_function --> https://stackoverflow.com/questions/41752946/replacing-a-character-from-a-certain-index
+
+
+
 
 from nltk.corpus import words
 import numpy as np
@@ -45,34 +49,52 @@ def initialize_sol(message):
 def pattern():
 #removes solutions that don't fit duplicate pattern
     for word in sol_dict:
-        print(word)
-        find_duplicates(word)
+        codify(word)
+
+        duplicates = len(index_positions)
+        if duplicates >= 1:
+            for sol in sol_dict[word]:
+                codify(sol)
+                if code != pattern:
+                    sol_dict[word].pop(sol)
         input()
 
-
-            # for i in range(len(duplicates)):
-            #     n = i+1
-            #     word = word.replace(duplicates[i],str(n))
-            #     print(word)
-
-
+def codify(word):
+#finds the indices of all letters in word then encodes
+    print(word)
+    global index_positions
+    global code
     index_positions = {}
-
-def find_duplicates(word):
-#finds the indices of all letters in word
     regexPattern = re.compile('[a-zA-Z0-9]')
     iteratorOfMatchObs = regexPattern.finditer(word)
-    index_positions = {}
-
     for matchObj in iteratorOfMatchObs:
         index_positions[matchObj.group()] = index_positions.get(matchObj.group(), []) + [matchObj.start()]
-
-    print(index_positions.items())
-
-def codify(word,index_positions):
-#turns the encoded words and all potential solutions into number codes
-    zeros = word.replace(word, "0" * len(word))
+    for key in list(index_positions.keys()):
+    #Only look at duplicates
+        if len(index_positions[key]) <= 1:
+            index_positions.pop(key)
+#---------------------------------------------------------------------
     print(index_positions)
+    zeros = word.replace(word, "0" * len(word))
+    i = 0
+    for letter in index_positions:
+        key_value = index_positions[letter]
+        for m in range(len(key_value)):
+            n = i+1
+            position = key_value[m]
+            def replace_str_index(text,index=0,replacement=''):
+                replacement = '%s%s%s'%(text[:index],replacement,text[index+1:])
+                return replacement
+            zeros = replace_str_index(zeros, position, str(n))
+            code = zeros
+
+            print(code)
+        i+=1
+    return code
+    index_positions.clear()
+
+
+
 
 
         #print(code)
@@ -83,19 +105,6 @@ def codify(word,index_positions):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 create_length_dict()
 initialize_sol(message)
 pattern()
-#find_duplicates("olevozxv’h")
-#codify("nlnvmg", index_positions)
