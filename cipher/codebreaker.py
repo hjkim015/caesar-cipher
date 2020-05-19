@@ -8,8 +8,8 @@ import numpy as np
 import re
 
 word_list = words.words()
-message = '''Ovg fh ivgfim uli z nlnvmg gl Ozwb Olevozxv’h lyqvxgrlm dsrxs hgzgvw gszg gsv nzxsrmv xzm lmob wl dszg dv gvoo rg gl wl'''
-#message = "ji he noem li gaiiag"
+#message = '''Ovg fh ivgfim uli z nlnvmg gl Ozwb Olevozxv’h lyqvxgrlm dsrxs hgzgvw gszg gsv nzxsrmv xzm lmob wl dszg dv gvoo rg gl wl'''
+message = "Olevozxv’h"
 alphabet = "abcdefghijklmnopqrstuvwxyz" + "’"
 punctuation = "?!.,"
 sol_dict= {}
@@ -49,21 +49,31 @@ def initialize_sol(message):
 def pattern():
 #removes solutions that don't fit duplicate pattern
     for word in sol_dict:
-        codify(word)
-
-        duplicates = len(index_positions)
-        if duplicates >= 1:
-            for sol in sol_dict[word]:
-                codify(sol)
-                if code != pattern:
-                    sol_dict[word].pop(sol)
         input()
+        print(word)
+        duplicates = []
+        for letter in word:
+            if word.count(letter) > 1 and letter not in duplicates:
+                duplicates.append(letter)
+        if len(duplicates) >= 1:
+            input()
+            print("before", len(sol_dict[word]))
+            code = codify(word)
+            for sol in sol_dict[word]:
+                test_code = codify(sol)
+                print("code", code)
+                print("test", test_code)
+                print(sol)
+                if test_code != code:
+                    sol_dict[word].remove(sol)
+                    if sol not in sol_dict[word]:
+                        print("status: removed")
+                    input()
+            print("after", len(sol_dict[word]))
+
 
 def codify(word):
 #finds the indices of all letters in word then encodes
-    print(word)
-    global index_positions
-    global code
     index_positions = {}
     regexPattern = re.compile('[a-zA-Z0-9]')
     iteratorOfMatchObs = regexPattern.finditer(word)
@@ -73,8 +83,7 @@ def codify(word):
     #Only look at duplicates
         if len(index_positions[key]) <= 1:
             index_positions.pop(key)
-#---------------------------------------------------------------------
-    print(index_positions)
+    code = ""
     zeros = word.replace(word, "0" * len(word))
     i = 0
     for letter in index_positions:
@@ -86,12 +95,10 @@ def codify(word):
                 replacement = '%s%s%s'%(text[:index],replacement,text[index+1:])
                 return replacement
             zeros = replace_str_index(zeros, position, str(n))
-            code = zeros
-
-            print(code)
         i+=1
-    return code
+
     index_positions.clear()
+    return zeros
 
 
 
