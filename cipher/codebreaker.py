@@ -2,78 +2,62 @@
 # credits for find find_letter_indices function --> https://stackoverflow.com/questions/11122291/how-to-find-char-in-string-and-get-all-the-indexes
 from nltk.corpus import words
 import numpy as np
+import string
 import re
 
-word_bank = words.words()
-
-#message = "ivgfim"
+english_words = words.words()
 message = '''Ovg fh ivgfim uli z nlnvmg gl Ozwb lyqvxgrlm dsrxs hgzgvw gszg gsv nzxsrmv xzm lmob wl dszg dv gvoo rg gl wl'''
-alphabet = "abcdefghijklmnopqrstuvwxyz"
-alpha_list = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+alphabet = list(string.ascii_lowercase)
 contraction = " ' ’ "
 punctuation = "?!.,"
-sol_dict= {}
-sol_letter_dict = {}
-length_dict = {}
+word_sol = {}
+cipher = {}
+word_bank = {}
 
-def initialize_length_dict():
+def initialize_word_bank():
 #creates a dictionary that organizes English words based on their length
-    for key in word_bank:
-        length = len(key)
-        if length in length_dict:
-            length_dict[length].append(key)
-        else:
-            length_dict[length] = [key]
-    length_dict[1] = ["a", "i"]
-
-def initialize_sol(message):
-#sets each word in the message to a solution set equal to the word length
-    for sol in word_bank:
-        sol.lower()
-
-    message = message.lower()
-    message_words = []
-    message_letters = []
-    word = ""
-    i=1
-    for symbol in message:
-        if symbol in alphabet:
-            word += symbol
-            if i == len(message):
-                message_words.append(word)
-        else:
-            message_words.append(word)
-            word = ""
-        i+=1
-    for word in message_words:
-    #creates length_dict
+# {2: "am", "is", etc.}
+    for word in english_words:
         length = len(word)
-        sol_dict[word] = length_dict[length]
+        if length in word_bank:
+            word_bank[length].append(word)
+        else:
+            word_bank[length] = [word]
+    word_bank[1] = ["a", "i"]
+    return word_bank
 
-    for letter in message:
-        if letter in alphabet and letter not in message_letters:
-            message_letters.append(letter)
-    for letter in message_letters:
-    #creates letter_dict
-        sol_letter_dict[letter] = alpha_list
-    for word in sol_dict:
-    #modifies letter_dict to cater to one letter words
-        if len(word) == 1:
-            sol_letter_dict[word] = sol_dict[word]
+def initialize__sol(message):
+#initializes word_sol and cipher dictionaries
+    message = message.lower()
+    m_words = message.split()
+    m_spaceless = list(message.replace(" ", ""))
+    m_letters = list(dict.fromkeys(m_spaceless))
 
-def pattern():
-#removes solutions that don't fit duplicate pattern
-    for word in sol_dict:
+    for l in m_letters:
+        cipher[l] = alphabet
+    for word in m_words:
+        length = len(word)
+        if length == 1:
+            cipher[word] = ["a", "i"]
+        word_sol[word] = word_bank[length]
+
+    return cipher, word_sol
+
+def duplicates():
+#removes solutions from word_sol that don't fit duplicate pattern
+    for word in word_sol:
         duplicates = []
         for letter in word:
             if word.count(letter) > 1 and letter not in duplicates:
                 duplicates.append(letter)
         if len(duplicates) >= 1:
             code = codify(word)
-            for sol in sol_dict[word]:
+            for sol in word_sol[word]:
                 test_code = codify(sol)
                 if test_code != code:
-                    sol_dict[word].remove(sol)
+                    word_sol[word].remove(sol)
+
+    return word_sol
 
 def find_indices(word):
 #finds the index positions of every letter in the word
@@ -99,6 +83,7 @@ def codify(word):
     code = ""
     zeros = word.replace(word, "0" * len(word))
     i = 0
+    #i keeps track of what number each letter is
     for letter in index_positions:
         key_value = index_positions[letter]
         for m in range(len(key_value)):
@@ -109,23 +94,20 @@ def codify(word):
                 return replacement
             zeros = replace_str_index(zeros, position, str(n))
         i+=1
-
     index_positions.clear()
     return zeros
 
 def one_letter():
-    print(sol_letter_dict.keys())
-
-    for key, values in sol_letter_dict.items():
-        length = len(sol_letter_dict[key])
+    for key, values in cipher.items():
+        length = len(cipher[key])
         for value in values:
             input()
             print("the value we are on for the key: ", key, "is: ", value)
             print("Before", length)
-            test_dict = sol_dict.copy()
+            test_dict = word_sol.copy()
             test_letter = value
             encoded_letter = key
-            print(sol_letter_dict[encoded_letter])
+            print(cipher[encoded_letter])
             for word in test_dict:
                 input()
                 if encoded_letter in word:
@@ -140,17 +122,17 @@ def one_letter():
                             test_dict[word].remove(sol)
                             print("potential solutions length after: ", len(test_dict[word]))
             if len(test_dict[word]) == 0:
-                sol_letter_dict[encoded_letter].remove(test_letter)
+                cipher[encoded_letter].remove(test_letter)
                 print("after", length)
 
 
-    print(sol_letter_dict)
+
 
 
 
 
 #set single letter to either "a" or "i"
-#randomly assign cipher letters, if any of the words go empty, it can't word_bank
+#randomly assign cipher letters, if any of the words go empty, it can't english_words
 #test this like 25*25 times for every alphabet letter.
 #testing one at a time.
 
@@ -158,9 +140,10 @@ def one_letter():
 #assign the letter, and go through every encoded word that has that letter
 #if word bank empty eliminate.
 
-
-
-initialize_length_dict()
-initialize_sol(message)
-pattern()
+initialize_word_bank()
+initialize__sol(message)
+duplicates()
 one_letter()
+
+#pattern()
+#one_letter()
