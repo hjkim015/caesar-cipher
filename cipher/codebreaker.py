@@ -1,18 +1,33 @@
 # credits for replace_string_function --> https://stackoverflow.com/questions/41752946/replacing-a-character-from-a-certain-index
 # credits for find find_letter_indices function --> https://stackoverflow.com/questions/11122291/how-to-find-char-in-string-and-get-all-the-indexes
 from nltk.corpus import words
+from PyDictionary import PyDictionary
 import numpy as np
 import string
 import re
 
-english_words = words.words()
-message = '''Ovg fh ivgfim uli z nlnvmg gl Ozwb Olevozxv’h lyqvxgrlm, dsrxs hgzgvw gszg gsv nzxsrmv xzm lmob wl dszg dv gvoo rg gl wl. Lmv xlfow hzb gszg z nzm xzm "rmqvxg" zm rwvz rmgl gsv nzxsrmv, zmw gszg rg droo ivhklmw gl z xvigzrm vcgvmg zmw gsvm wilk rmgl jfrvhxvmxv, orpv z krzml hgirmt hgifxp yb z sznnvi. Zmlgsvi hrnrov dlfow yv zm zglnrx krov lu ovhh gszm xirgrxzo hrav: zm rmqvxgvw rwvz rh gl xliivhklmw gl z mvfgilm vmgvirmt gsv krov uiln drgslfg. Vzxs hfxs mvfgilm droo xzfhv z xvigzrm wrhgfiyzmxv dsrxs vevmgfzoob wrvh zdzb. Ru, sldvevi, gsv hrav lu gsv krov rh hfuurxrvmgob rmxivzhvw, gsv wrhgfiyzmxv xzfhvw yb hfxs zm rmxlnrmt mvfgilm droo evib orpvob tl lm zmw lm rmxivzhrmt fmgro gsv dslov krov rh wvhgilbvw. Rh gsviv z xliivhklmwrmt ksvmlnvmlm uli nrmwh, zmw rh gsviv lmv uli nzxsrmvh? Gsviv wlvh hvvn gl yv lmv uli gsv sfnzm nrmw. Gsv nzqlirgb lu gsvn hvvn gl yv "hfy xirgrxzo," r.v. gl xliivhklmw rm gsrh zmzoltb gl krovh lu hfy-xirgrxzo hrav. Zm rwvz kivhvmgvw gl hfxs z nrmw droo lm zeviztv trev irhv gl ovhh gszm lmv rwvz rm ivkob. Z hnzoorhs kilkligrlm ziv hfkvixirgrxzo. Zm rwvz kivhvmgvw gl hfxs z nrmw nzb trev irhv gl z dslov "gsvlib" xlmhrhgrmt lu hvxlmwzib, gvigrzib zmw nliv ivnlgv rwvzh. Zmrnzoh’ nrmwh hvvn gl yv evib wvurmrgvob hfy-xirgrxzo. Zwsvirmt gl gsrh zmzoltb dv zhp,"Xzm z nzxsrmv yv nzwv gl yv hfkvi-xirgrxzo?'''
+words = words.words()
+english_words = []
+# for word in words:
+#     word = word.lower()
+#     english_words.append(word)
 
-#message = '''Ovg fh ivgfim uli z nlnvmg gl Ozwb Olevozxv’h lyqvxgrlm, dsrxs hgzgvw gszg gsv nzxsrmv xzm lmob wl dszg dv gvoo rg gl wl.'''
+file_words = open("common_english_words.txt", "r")
+file_contractions = open("contractions.txt", "r")
+# english_words =[]
+# contractions = []
 
+for word in file_words:
+    word = word.replace("\n", "")
+    english_words.append(word)
+# for word in file_contractions:
+#     word = word.replace("\n", "")
+#     contractions.append(word)
+
+message = '''Ovg fh ivgfim uli z nlnvmg gl Ozwb Olevozxvh lyqvxgrlm, dsrxs hgzgvw gszg gsv nzxsrmv xzm lmob wl dszg dv gvoo rg gl wl. Lmv xlfow hzb gszg z nzm xzm "rmqvxg" zm rwvz rmgl gsv nzxsrmv, zmw gszg rg droo ivhklmw gl z xvigzrm vcgvmg zmw gsvm wilk rmgl jfrvhxvmxv, orpv z krzml hgirmt hgifxp yb z sznnvi. Zmlgsvi hrnrov dlfow yv zm zglnrx krov lu ovhh gszm xirgrxzo hrav zm rmqvxgvw rwvz rh gl xliivhklmw gl z mvfgilm vmgvirmt gsv krov uiln drgslfg. Vzxs hfxs mvfgilm droo xzfhv z xvigzrm wrhgfiyzmxv dsrxs vevmgfzoob wrvh zdzb. Ru, sldvevi, gsv hrav lu gsv krov rh hfuurxrvmgob rmxivzhvw, gsv wrhgfiyzmxv xzfhvw yb hfxs zm rmxlnrmt mvfgilm droo evib orpvob tl lm zmw lm rmxivzhrmt fmgro gsv dslov krov rh wvhgilbvw. Rh gsviv z xliivhklmwrmt ksvmlnvmlm uli nrmwh, zmw rh gsviv lmv uli nzxsrmvh? Gsviv wlvh hvvn gl yv lmv uli gsv sfnzm nrmw. Gsv nzqlirgb lu gsvn hvvn gl yv hfy xirgrxzo gl xliivhklmw rm gsrh zmzoltb gl krovh lu hrav. Zm rwvz kivhvmgvw gl hfxs z nrmw droo lm zeviztv trev irhv gl ovhh gszm lmv rwvz rm ivkob. Z hnzoorhs kilkligrlm ziv hfkvixirgrxzo. Zm rwvz kivhvmgvw gl hfxs z nrmw nzb trev irhv gl z dslov "gsvlib" xlmhrhgrmt lu hvxlmwzib, gvigrzib zmw nliv ivnlgv rwvzh. Zmrnzoh nrmwh hvvn gl yv evib wvurmrgvob hfyxirgrxzo. Zwsvirmt gl gsrh zmzoltb dv zhp, 'Xzm z nzxsrmv yv nzwv gl yv?'''
+message = message.lower()
+message = ' '.join(word.strip(string.punctuation) for word in message.split())
 alphabet = list(string.ascii_lowercase)
-contraction = " ' ’ "
-punctuation = "?!.,"
 word_sol = {}
 cipher = {}
 word_bank = {}
@@ -31,23 +46,23 @@ def initialize_word_bank():
     return word_bank
 
 def initialize__sol(message):
-#initializes word_sol and cipher dictionaries
-    message = message.lower()
-    message = ' '.join(word.strip(string.punctuation) for word in message.split())
+    '''initializes word_sol and cipher dictionaries'''
     #strips punctuation
     m_words = message.split()
-
     m_spaceless = list(message.replace(" ", ""))
     m_letters = list(dict.fromkeys(m_spaceless))
 
     for l in m_letters:
-        cipher[l] = alphabet[:]
+        if l in alphabet:
+            cipher[l] = alphabet[:]
+
     for word in m_words:
         length = len(word)
         if length == 1:
             cipher[word] = ["a", "i"]
         word_sol[word] = word_bank[length].copy()
 
+    print("done with initializing the word solutions and message")
     return cipher, word_sol
 
 def duplicates():
@@ -73,6 +88,7 @@ def duplicates():
                     # print("removed!", before, "-->", after)
                     # print("ivgfim", len(word_sol["ivgfim"]))
 
+    print("done with duplicates")
     return word_sol
 
 def find_indices(word):
@@ -113,7 +129,22 @@ def codify(word):
     index_positions.clear()
     return zeros
 
+def cipher_word(encoded_letter, encoded_word, test_letter, test_dict):
+    '''This function is used for the _cipher_test function. It returns a 1 or 0 to show
+    whether a test_letter can be a solution for one encoded word'''
+    indices = find_letter_indices(encoded_word, encoded_letter)
+    # print("length --> of solutions for this word", len(test_dict[encoded_word]))
+    # print("encoded word", encoded_word)
+    for sol in test_dict[encoded_word]:
 
+        if sol[indices[0]] == test_letter:
+            # print("sol", sol)
+            result = 1
+            return result
+
+    result = 0
+    # print(result)
+    return result
 
 def one_letter_cipher_test(encoded_letter, test_letter):
     '''takes a potential one_letter cipher mapping and returns a 1 or 0 whether the cipher
@@ -135,49 +166,67 @@ def one_letter_cipher_test(encoded_letter, test_letter):
         # print("a potential solution")
         return verdict
 
-def cipher_word(encoded_letter, encoded_word, test_letter, test_dict):
-    '''This function is used for the _cipher_test function. It returns a 1 or 0 to show
-    whether a test_letter can be a solution for one encoded word'''
-    indices = find_letter_indices(encoded_word, encoded_letter)
-    # print("length --> of solutions for this word", len(test_dict[encoded_word]))
-    for sol in test_dict[encoded_word]:
-        if sol[indices[0]] == test_letter:
-            # print("sol", sol)
-            result = 1
-            return result
-
-    result = 0
-    return result
-
 
 def cipher_test():
     '''will run through the whole entire cipher and will eliminate test_letters
     that cannot be potential solutions for the message.'''
 
+
     for encoded_letter, values in cipher.items():
-        print(encoded_letter, "values before", len(cipher[encoded_letter]))
+        # print(encoded_letter, "values before", len(cipher[encoded_letter]))
 
         for test_letter in values[::-1]:
             # print("test_letter", test_letter)
             result = one_letter_cipher_test(encoded_letter, test_letter)
             if result == 0:
                 cipher[encoded_letter].remove(test_letter)
-        print(encoded_letter, "after-->", len(cipher[encoded_letter]))
-        input("_________________________________________________")
+        # print(encoded_letter, "after-->", len(cipher[encoded_letter]))
+        # input("_________________________________________________")
+
+    for key, values in cipher.items():
+        print(key, values)
+        # input()
 
     return cipher
 
+def solution(cipher):
+    solutions = []
+    for key in cipher:
+        if len(cipher[key]) == 1:
+            if cipher[key][0] not in solutions:
+                solutions.append(cipher[key][0])
+    for key in cipher:
+        if len(cipher[key]) > 1:
+            for letter in solutions:
+                if letter in cipher[key]:
+                    cipher[key].remove(letter)
 
 
-'''action items:
-    1.) convert the english words to lowercase so they're easier to work with.
+    for key, values in cipher.items():
+        print(key, values)
+    return cipher
 
-'''
+def translate(message, cipher):
+    print(message)
+    print("-----------------------------------")
+    for key in cipher:
+        if len(cipher[key]) == 1:
+            message = message.replace(key, cipher[key][0])
 
 
-initialize_word_bank()
-initialize__sol(message)
-duplicates()
-cipher_test()
+    print(message)
 
-#cipher_test()
+    return message
+
+
+def solve(message):
+    initialize_word_bank()
+    initialize__sol(message)
+    duplicates()
+    cipher_test()
+    solution(cipher)
+    translate(message, cipher)
+
+
+
+solve(message)
